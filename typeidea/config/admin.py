@@ -1,6 +1,9 @@
 from django.contrib import admin
 
+import sys
 from .models import Link, SideBar
+sys.path.append("..")
+from custom_site import custom_site
 
 # Register your models here.
 
@@ -13,7 +16,7 @@ class LinkAdmin(admin.ModelAdmin):
         obj.owner = request.user
         return super(LinkAdmin, self).save_model(request, obj, form, change)
     
-@admin.register(SideBar)
+@admin.register(SideBar, site=custom_site)
 class SideBarAdmin(admin.ModelAdmin):
     list_display = ('title', 'display_type', 'content', 'created_time')
     fields = ('title', 'display_type', 'content')
