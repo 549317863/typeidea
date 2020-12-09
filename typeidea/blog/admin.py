@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+from django.contrib.admin.models import LogEntry
 
 import sys
 from .adminforms import PostAdminForm
 from .models import Post, Category, Tag
 sys.path.append("..")
 from custom_site import custom_site
+from base_admin import BaseOwnerAdmin
 
 # Register your models here.
 
@@ -29,8 +31,8 @@ class PostInline(admin.TabularInline):
     model = Post
 
 @admin.register(Category, site=custom_site)
-class CategoryAdmin(admin.ModelAdmin):
-    inlines = [PostInline]
+class CategoryAdmin(BaseOwnerAdmin):
+    # inlines = [PostInline]
     list_display = ('name', 'status', 'is_nav', 'created_time')
     fields = ('name', 'status', 'is_nav', 'owner')
 
@@ -40,7 +42,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Tag, site=custom_site)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name', 'status', 'created_time')
     fields = ('name', 'status')
 
@@ -49,7 +51,7 @@ class TagAdmin(admin.ModelAdmin):
         return super(TagAdmin, self).save_model(request, obj, form, change)
 
 @admin.register(Post, site=custom_site)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
 
     list_display = [
@@ -65,12 +67,12 @@ class PostAdmin(admin.ModelAdmin):
 
     save_on_top = True
 
-    exclude = ('owner',)
+    # exclude = ('owner',)
 
-    fields = (
-        ('category', 'title'),
-        'desc', 'status', 'content', 'tag',
-    )
+    # fields = (
+    #     ('category', 'title'),
+    #     'desc', 'status', 'content', 'tag',
+    # )
 
     # fieldsets = (
     #     ('基础配置', {
@@ -97,7 +99,7 @@ class PostAdmin(admin.ModelAdmin):
             reverse('cus_admin:blog_post_change', args=(obj.id,))
         )
 
-    operator.short_description = '操作'
+    # operator.short_description = '操作'
 
     def post_count(self, obj):
         return obj.post_set.count()
@@ -118,3 +120,8 @@ class PostAdmin(admin.ModelAdmin):
             'all': ("https//cdm.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css")
         }
         js = ('https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap/bundle.js', )
+
+@admin.register(LogEntry, site=custom_site)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ['object_repr', 'object_id', 'action_flag', 'user',
+                    'change_message']
