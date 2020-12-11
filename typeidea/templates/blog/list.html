@@ -5,6 +5,14 @@
     <title>typeidea博客系统</title>
 </head>
 <body>
+<div>顶部分类:
+    {% for cate in navs %}
+    <a href="/categoriese/{{ cate.id }}/">{{ cate.name }}</a>
+    {% endfor %}
+</div>
+
+<hr/>
+<div>
 {% if tag %}
 标签页：{{ tag.name }}
 {% endif %}
@@ -25,6 +33,21 @@
     </li>
     {% endfor %}
 </ul>
+</div>
+
+<hr/>
+<div>底部分类：
+    {% for cate in categories %}
+    <a href="/categories/{{ cate.id }}/">{{ cate.name }}</a>
+    {% endfor %}
+</div>
+
+<dev>侧边栏展示:
+    {% for sidebar in sidebars %}
+    <h4>{{ sidebar.title }}</h4>
+    {{ sidebar.content }}
+    {% endfor %}
+</dev>
 </body>
 </html>
 
